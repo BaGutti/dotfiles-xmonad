@@ -1,3 +1,3 @@
 # dotfiles-xmonad
-###Warning:
+### Warning:
 this is under development, the dotfiles can change frecuently
