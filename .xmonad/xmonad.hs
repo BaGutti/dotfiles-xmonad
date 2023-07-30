@@ -61,7 +61,7 @@ myWorkspaces    = ["\63083", "\63288", "\63306", "\61723", "\63107", "\63601", "
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#11111b"
-myFocusedBorderColor = "#89dceb"
+myFocusedBorderColor = "#f38ba8"
 
 addNETSupported :: Atom -> X ()
 addNETSupported x   = withDisplay $ \dpy -> do
@@ -118,12 +118,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,                 xK_Print), maimsave)
 
     -- My Stuff
-    , ((modm,               xK_b     ), spawn "exec ~/bin/bartoggle")
-    , ((modm,               xK_z     ), spawn "exec ~/bin/inhibit_activate")
-    , ((modm .|. shiftMask, xK_z     ), spawn "exec ~/bin/inhibit_deactivate")
+    , ((modm,               xK_b     ), spawn "exec ~/.config/bin/bartoggle")
+    , ((modm,               xK_z     ), spawn "exec ~/.config/bin/inhibit_activate")
+    , ((modm .|. shiftMask, xK_z     ), spawn "exec ~/.config/bin/inhibit_deactivate")
     , ((modm .|. shiftMask, xK_a     ), clipboardy)
     -- Turn do not disturb on and off
-    , ((modm,               xK_d     ), spawn "exec ~/bin/do_not_disturb.sh")
+    , ((modm,               xK_d     ), spawn "exec ~/.bin/do_not_disturb.sh")
 
     -- close focused window
     , ((modm              , xK_q     ), kill)
@@ -201,7 +201,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_x     ), spawn "rofi -no-lazy-grab -show power-menu -modi power-menu:rofi-power-menu  -font 'Iosevka 16' -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"papirus\" -theme-str 'window {width: 12em;} listview {lines: 6;}'")
 
     -- Restart xmonad
-    , ((modm .|. shiftMask, xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    , ((modm .|. shiftMask, xK_r     ), spawn "xmonad --recompile; xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
@@ -222,7 +222,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        | (key, sc) <- zip [xK_w, xK_e] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
@@ -332,6 +332,7 @@ myStartupHook = do
   spawnOnce "picom"
   spawnOnce "greenclip daemon"
   spawnOnce "dunst"
+  spawnOnce "conky"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
