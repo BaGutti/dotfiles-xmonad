@@ -60,8 +60,8 @@ myWorkspaces    = ["\63083", "\63288", "\63306", "\61723", "\63107", "\63601", "
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#11111b"
-myFocusedBorderColor = "#f38ba8"
+myNormalBorderColor  = "#89b4fa"
+myFocusedBorderColor = "#fab387"
 
 addNETSupported :: Atom -> X ()
 addNETSupported x   = withDisplay $ \dpy -> do
@@ -88,6 +88,7 @@ clipboardy = spawn "rofi -modi \"\63053 :greenclip print\" -show \"\63053 \" -ru
 maimcopy = spawn "flameshot gui"
 maimsave = spawn "maim -s ~/Desktop/$(date +%Y-%m-%d_%H-%M-%S).png && notify-send \"Screenshot\" \"Saved to Desktop\" -i flameshot"
 rofi_launcher = spawn "rofi -no-lazy-grab -show drun -modi run,drun,window -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"Papirus-Dark\" "
+powermenu = spawn "rofi -no-lazy-grab -show power-menu -modi power-menu:rofi-power-menu  -font 'Iosevka 16' -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"papirus\" -theme-str 'window {width: 12em;} listview {lines: 6;}'"
 
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
@@ -197,8 +198,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
 
-    -- Quit xmonad
-    , ((modm              , xK_x     ), spawn "rofi -no-lazy-grab -show power-menu -modi power-menu:rofi-power-menu  -font 'Iosevka 16' -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"papirus\" -theme-str 'window {width: 12em;} listview {lines: 6;}'")
+    -- Open Power-Menu
+    , ((modm              , xK_x     ), powermenu)
 
     -- Restart xmonad
     , ((modm .|. shiftMask, xK_r     ), spawn "xmonad --recompile; xmonad --restart")
@@ -221,9 +222,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
+    -- main monitor in the right
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e] [0..]
+        | (key, sc) <- zip [xK_e, xK_w] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+    -- main monitor to the left
+    --[((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
+    --    | (key, sc) <- zip [xK_w, xK_e] [0..]
+    --    , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+
 
 
 ------------------------------------------------------------------------
@@ -324,15 +331,13 @@ myLogHook = return ()
 myStartupHook = do
   spawnOnce "exec rofi-polkit-agent"
   spawnOnce "exec ~/.xrandr.sh"
-  spawnOnce "exec ~/bin/bartoggle"
-  spawnOnce "exec ~/bin/eww daemon"
-  spawn "xsetroot -cursor_name left_ptr"
+  spawnOnce "exec ~/.config/bin/bartoggle"
   spawn "exec ~/bin/lock.sh"
-  spawnOnce "nitrogen --restore"
+  -- spawnOnce "nitrogen --restore"
   spawnOnce "picom"
   spawnOnce "greenclip daemon"
   spawnOnce "dunst"
-  spawnOnce "conky"
+  -- spawnOnce "conky"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
